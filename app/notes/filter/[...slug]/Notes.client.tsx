@@ -2,11 +2,11 @@
 
 import css from './page.module.css';
 
-import { type Note } from '../../types/note';
+import { type Note, type FetchTagNote } from '@/types/note';
 
 import { keepPreviousData, useQuery } from '@tanstack/react-query';
 import { useState } from 'react';
-import { fetchNotes } from '../../lib/api';
+import { fetchFilterNotes } from '@/lib/api';
 import { useDebouncedCallback } from 'use-debounce';
 
 import NoteList from '@/components/NoteList/NoteList';
@@ -18,7 +18,11 @@ import CreateMessage from '@/components/CreateMessage/CreateMessage';
 
 type Modal = 'form' | 'error' | 'create' | 'delete';
 
-export default function NotesClient() {
+interface NotesClientProps {
+  tag: FetchTagNote;
+}
+
+export default function NotesClient({ tag }: NotesClientProps) {
   const [page, setPage] = useState(1);
   const [isModal, setIsModal] = useState(false);
   const [word, setWord] = useState('');
@@ -26,8 +30,8 @@ export default function NotesClient() {
   const [message, setMessage] = useState<Note | null>(null);
 
   const { data } = useQuery({
-    queryKey: ['notes', page, word],
-    queryFn: () => fetchNotes(page, word),
+    queryKey: ['notes', tag, page, word],
+    queryFn: () => fetchFilterNotes(tag, page, word),
     placeholderData: keepPreviousData,
     refetchOnMount: false,
     throwOnError: true,
@@ -63,7 +67,7 @@ export default function NotesClient() {
             setPage={setPage}
           />
         )}
-        <button className={css.button} onClick={createBtn}>
+        <button className={css.toolBtn} onClick={createBtn}>
           Create note +
         </button>
       </div>

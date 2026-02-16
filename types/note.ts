@@ -14,3 +14,11 @@ export interface NewNote {
     content: string;
     tag: NoteTag;
 }
+
+export type FetchTagNote =
+    | 'Todo'
+    | 'Work'
+    | 'Personal'
+    | 'Meeting'
+    | 'Shopping'
+    | 'all';
